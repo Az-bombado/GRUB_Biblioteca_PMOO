@@ -203,7 +203,31 @@ public class Main {
             return;
         }
 
+        int clienteNovo;
+        boolean loopClienteNovo = true;
+
+        while (loopClienteNovo) {
+
+            System.out.println("Realizar Emprestimo");
+            System.out.println("1 - Cliente ja Cadastrado");
+            System.out.println("2 - Novo Cliente");
+
+            clienteNovo = leitor.nextInt();
+
+            switch (clienteNovo) {
+                case 1:
+                    loopClienteNovo = false;
+                    break;
+                case 2:
+                    cadastrarCliente(leitor);
+                    loopClienteNovo = false;
+                    break;
+                default:
+                    System.out.println("Tente novamente");
+            }
+        }
         System.out.println("Codigo cliente:");
+
         int codigoCliente = leitor.nextInt();
 
         System.out.println("ISBN livro:");
