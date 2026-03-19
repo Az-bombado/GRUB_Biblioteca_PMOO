@@ -7,6 +7,15 @@ public class Clientes {
     private boolean emprestimoAtivo;
     private boolean cadastroAtivo;
 
+    public void exibirCliente() {
+        System.out.println(
+                "| " + idDoCliente +
+                        " | " + codigoDoCliente +
+                        " | " + nomeDoCliente +
+                        " | " + cpfDoCliente +
+                        " | " + emprestimoAtivo + " |"
+        );
+    }
     public int getIdDoCliente() {
         return idDoCliente;
     }

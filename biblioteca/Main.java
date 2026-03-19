@@ -47,6 +47,7 @@ public class Main {
             System.out.println("3 Cadastrar Livro");
             System.out.println("4 Cadastrar Cliente");
             System.out.println("5 Realizar Emprestimo");
+            System.out.println("6 Listar Clientes");
             System.out.println("0 Sair");
 
             opcao = leitor.nextInt();
@@ -71,6 +72,10 @@ public class Main {
 
                 case 5:
                     realizarEmprestimo(leitor);
+                    break;
+
+                case 6 :
+                    ListarClientes();
                     break;
             }
 
@@ -282,5 +287,30 @@ public class Main {
 
         System.out.println("Emprestimo realizado com sucesso");
     }
-
+    public static void ListarClientes() {
+        Scanner listarScanner = new Scanner(System.in);
+        int point = 10;
+        boolean loopLista = true;
+        int i, j = 0;
+        while(loopLista == true){
+            for (i = j; i <= point; i++) {
+                clientes[i].exibirCliente();
+            }
+            System.out.println("\n\n Digite 1 para para voltar a pagina e 2 para avançar ");
+            System.out.println("Digite 0 para retornar ao menu");
+            int escolha = listarScanner.nextInt();
+            switch (escolha) {
+                case 0:
+                    loopLista = false;
+                    break;
+                case 1:
+                    j = j + 10;
+                    point = point + 10;
+                    break;
+                case 2:
+                    j = j - 10;
+                    point = point - 10;
+            }
+        }
+    }
 }
