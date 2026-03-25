@@ -1,3 +1,5 @@
+package biblioteca.model;
+
 public class Bibliotecarios {
 
     private int idDoBibliotecario;

@@ -1,5 +1,12 @@
-import java.util.Scanner;
+package biblioteca;
+
+import biblioteca.dao.ClienteDAO;
+import biblioteca.model.*;
+
+
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class Main {
 
@@ -7,6 +14,8 @@ public class Main {
     static Clientes[] clientes = new Clientes[100000];
     static Bibliotecarios[] bibliotecarios = new Bibliotecarios[100];
     static Emprestimo[] emprestimos = new Emprestimo[100000];
+
+    static ClienteDAO dao = new ClienteDAO();
 
     static int totalLivros = 0;
     static int totalClientes = 0;
@@ -16,9 +25,20 @@ public class Main {
     static int logado = -1;
 
     static String senhaAdmin = "Admin123";
-
     public static int gerarCodigo() {
-        return (int)(Math.random()*900000)+100000;
+
+        int codigo;
+        boolean existe;
+
+        do {
+
+            codigo = (int)(Math.random()*900000)+100000;
+
+            existe = dao.codigoExiste(codigo);
+
+        } while(existe);
+
+        return codigo;
     }
 
     public static void main(String[] args) {
@@ -193,11 +213,14 @@ public class Main {
         novo.setCadastroAtivo(true);
         novo.setEmrestimoAtivo(false);
 
-        clientes[totalClientes] = novo;
+        try{
+            dao.inserirCliente(novo);
+            System.out.println("Cliente cadastrado");
+        } catch(Exception e){
+            System.out.println("Erro ao Cadastrar o Cliente");
+            System.out.println("Erro no Banco de Dados");
+        }
 
-        totalClientes++;
-
-        System.out.println("Cliente cadastrado");
         System.out.println("Codigo do cliente: "+codigo);
     }
 
@@ -294,9 +317,13 @@ public class Main {
         int i, j = 0;
         while(loopLista == true){
             for (i = j; i <= point; i++) {
+                if (clientes[i] == null){
+                    System.out.println("sem Usuarios");
+                }else{
                 clientes[i].exibirCliente();
+                }
             }
-            System.out.println("\n\n Digite 1 ptoucara para voltar a pagina e 2 para avançar ");
+            System.out.println("\n\n Digite 1 para voltar a pagina e 2 para avançar ");
             System.out.println("Digite 0 para retornar ao menu");
             int escolha = listarScanner.nextInt();
             switch (escolha) {
@@ -308,9 +335,15 @@ public class Main {
                     point = point + 10;
                     break;
                 case 2:
-                    j = j - 10;
+                    if (j == 0 && point == 10){
+                    }else{
+                        j = j - 10;
                     point = point - 10;
+                }
             }
         }
+    }
+    public static void UpLoadNoBancoCliente(){
+
     }
 }

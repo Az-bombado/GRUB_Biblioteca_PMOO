@@ -1,3 +1,5 @@
+package biblioteca.model;
+
 public class Emprestimo {
 
     private int idDoEmprestimo;

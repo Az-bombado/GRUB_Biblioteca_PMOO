@@ -1,10 +1,12 @@
+package biblioteca.model;
+
 public class Clientes {
 
     private int idDoCliente;
     private int codigoDoCliente;
     private String nomeDoCliente;
     private String cpfDoCliente;
-    private boolean emprestimoAtivo;
+    private boolean emprestimoAtivo = false;
     private boolean cadastroAtivo;
 
     public void exibirCliente() {
@@ -16,6 +18,7 @@ public class Clientes {
                         " | " + emprestimoAtivo + " |"
         );
     }
+
     public int getIdDoCliente() {
         return idDoCliente;
     }
@@ -48,7 +51,7 @@ public class Clientes {
         this.cpfDoCliente = cpfDoCliente;
     }
 
-    public boolean isEmrestimoAtivo() {
+    public boolean isEmprestimoAtivo() {
         return emprestimoAtivo;
     }
 

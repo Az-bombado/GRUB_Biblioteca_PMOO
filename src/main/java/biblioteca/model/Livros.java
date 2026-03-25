@@ -1,3 +1,5 @@
+package biblioteca.model;
+
 public class Livros {
 
     private int idDoLivro;
