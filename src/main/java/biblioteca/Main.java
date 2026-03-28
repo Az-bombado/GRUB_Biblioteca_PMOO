@@ -1,30 +1,22 @@
 package biblioteca;
 
-import biblioteca.dao.ClienteDAO;
 import biblioteca.model.*;
 
-
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
-    static Livros[] livros = new Livros[100000];
-    static Clientes[] clientes = new Clientes[100000];
-    static Bibliotecarios[] bibliotecarios = new Bibliotecarios[100];
-    static Emprestimo[] emprestimos = new Emprestimo[100000];
-
-    static ClienteDAO dao = new ClienteDAO();
-
-    static int totalLivros = 0;
-    static int totalClientes = 0;
-    static int totalBibliotecarios = 0;
-    static int totalEmprestimos = 0;
+    static ArrayList<Livros> livros = new ArrayList<>();
+    static ArrayList<Clientes> clientes = new ArrayList<>();
+    static ArrayList<Bibliotecarios> bibliotecarios = new ArrayList<>();
+    static ArrayList<Emprestimo> emprestimos = new ArrayList<>();
 
     static int logado = -1;
 
     static String senhaAdmin = "Admin123";
+
     public static int gerarCodigo() {
 
         int codigo;
@@ -32,11 +24,19 @@ public class Main {
 
         do {
 
-            codigo = (int)(Math.random()*900000)+100000;
+            codigo = (int) (Math.random() * 900000) + 100000;
+            existe = false;
 
-            existe = dao.codigoExiste(codigo);
+            for (Clientes c : clientes) {
 
-        } while(existe);
+                if (c.getCodigoDoCliente() == codigo) {
+                    existe = true;
+                    break;
+                }
+
+            }
+
+        } while (existe);
 
         return codigo;
     }
@@ -49,15 +49,11 @@ public class Main {
         do {
 
             String nomeLogado = "Nenhum";
-
-            if(logado >= 0 && bibliotecarios[logado] != null){
-                nomeLogado = bibliotecarios[logado].getNomeDoBibliotecario();
-            }
-
             int codigoLogado = 000000;
 
-            if(logado >= 0 && bibliotecarios[logado] != null){
-                codigoLogado = bibliotecarios[logado].getCodigoDoBibliotecario();
+            if (logado >= 0) {
+                nomeLogado = bibliotecarios.get(logado).getNomeDoBibliotecario();
+                codigoLogado = bibliotecarios.get(logado).getCodigoDoBibliotecario();
             }
 
             System.out.println("\n===== SISTEMA BIBLIOTECA =====");
@@ -72,7 +68,7 @@ public class Main {
 
             opcao = leitor.nextInt();
 
-            switch(opcao){
+            switch (opcao) {
 
                 case 1:
                     loginBibliotecario(leitor);
@@ -94,16 +90,16 @@ public class Main {
                     realizarEmprestimo(leitor);
                     break;
 
-                case 6 :
-                    ListarClientes();
+                case 6:
+                    listarClientes();
                     break;
             }
 
-        }while(opcao != 0);
+        } while (opcao != 0);
 
     }
 
-    public static void loginBibliotecario(Scanner leitor){
+    public static void loginBibliotecario(Scanner leitor) {
 
         System.out.println("Nome:");
         String nome = leitor.next();
@@ -111,15 +107,15 @@ public class Main {
         System.out.println("Senha:");
         String senha = leitor.next();
 
-        for(int i=0;i<totalBibliotecarios;i++){
+        for (int i = 0; i < bibliotecarios.size(); i++) {
 
-            if(bibliotecarios[i].getNomeDoBibliotecario().equals(nome) &&
-                    bibliotecarios[i].getSenhaDoBlibliotecario().equals(senha)){
+            if (bibliotecarios.get(i).getNomeDoBibliotecario().equals(nome) &&
+                    bibliotecarios.get(i).getSenhaDoBlibliotecario().equals(senha)) {
 
                 logado = i;
 
                 System.out.println("Login realizado com sucesso");
-                System.out.println("Bem vindo " + bibliotecarios[i].getNomeDoBibliotecario());
+                System.out.println("Bem vindo " + bibliotecarios.get(i).getNomeDoBibliotecario());
 
                 return;
             }
@@ -128,19 +124,19 @@ public class Main {
         System.out.println("Login incorreto");
     }
 
-    public static void cadastrarBibliotecario(Scanner leitor){
+    public static void cadastrarBibliotecario(Scanner leitor) {
 
         System.out.println("Senha admin:");
         String senha = leitor.next();
 
-        if(!senha.equals(senhaAdmin)){
+        if (!senha.equals(senhaAdmin)) {
             System.out.println("Senha incorreta");
             return;
         }
 
         Bibliotecarios novo = new Bibliotecarios();
 
-        novo.setIdDoBibliotecario(totalBibliotecarios);
+        novo.setIdDoBibliotecario(bibliotecarios.size());
 
         int codigo = gerarCodigo();
         novo.setCodigoDoBibliotecario(codigo);
@@ -153,24 +149,22 @@ public class Main {
         System.out.println("Senha:");
         novo.setSenhaDoBlibliotecario(leitor.next());
 
-        bibliotecarios[totalBibliotecarios] = novo;
-
-        totalBibliotecarios++;
+        bibliotecarios.add(novo);
 
         System.out.println("Bibliotecario cadastrado");
-        System.out.println("Codigo de acesso: "+codigo);
+        System.out.println("Codigo de acesso: " + codigo);
     }
 
-    public static void cadastrarLivro(Scanner leitor){
+    public static void cadastrarLivro(Scanner leitor) {
 
         Livros novo = new Livros();
 
-        novo.setIdDoLivro(totalLivros);
+        novo.setIdDoLivro(livros.size());
+
+        leitor.nextLine();
 
         System.out.println("ISBN:");
         novo.setIsbn(leitor.nextLine());
-
-        leitor.nextLine();
 
         System.out.println("Nome:");
         novo.setNomeDoLivro(leitor.nextLine());
@@ -186,18 +180,16 @@ public class Main {
 
         novo.setQuantidadeEmprestado(0);
 
-        livros[totalLivros] = novo;
-
-        totalLivros++;
+        livros.add(novo);
 
         System.out.println("Livro cadastrado");
     }
 
-    public static void cadastrarCliente(Scanner leitor){
+    public static void cadastrarCliente(Scanner leitor) {
 
         Clientes novo = new Clientes();
 
-        novo.setIdDoCliente(totalClientes);
+        novo.setIdDoCliente(clientes.size());
 
         int codigo = gerarCodigo();
         novo.setCodigoDoCliente(codigo);
@@ -213,137 +205,128 @@ public class Main {
         novo.setCadastroAtivo(true);
         novo.setEmrestimoAtivo(false);
 
-        try{
-            dao.inserirCliente(novo);
-            System.out.println("Cliente cadastrado");
-        } catch(Exception e){
-            System.out.println("Erro ao Cadastrar o Cliente");
-            System.out.println("Erro no Banco de Dados");
-        }
+        clientes.add(novo);
 
-        System.out.println("Codigo do cliente: "+codigo);
+        System.out.println("Cliente cadastrado");
+        System.out.println("Codigo do cliente: " + codigo);
     }
 
-    public static void realizarEmprestimo(Scanner leitor){
+    public static void realizarEmprestimo(Scanner leitor) {
 
-        if(logado == -1){
+        if (logado == -1) {
             System.out.println("Nenhum bibliotecario logado");
             return;
         }
 
-        int clienteNovo;
-        boolean loopClienteNovo = true;
+        System.out.println("Realizar Emprestimo");
+        System.out.println("1 - Cliente ja Cadastrado");
+        System.out.println("2 - Novo Cliente");
 
-        while (loopClienteNovo) {
+        int clienteNovo = leitor.nextInt();
 
-            System.out.println("Realizar Emprestimo");
-            System.out.println("1 - Cliente ja Cadastrado");
-            System.out.println("2 - Novo Cliente");
-
-            clienteNovo = leitor.nextInt();
-
-            switch (clienteNovo) {
-                case 1:
-                    loopClienteNovo = false;
-                    break;
-                case 2:
-                    cadastrarCliente(leitor);
-                    loopClienteNovo = false;
-                    break;
-                default:
-                    System.out.println("Tente novamente");
-            }
+        if (clienteNovo == 2) {
+            cadastrarCliente(leitor);
         }
-        System.out.println("Codigo cliente:");
 
+        System.out.println("Codigo cliente:");
         int codigoCliente = leitor.nextInt();
 
+        leitor.nextLine();
+
         System.out.println("ISBN livro:");
-        int isbn = leitor.nextInt();
+        String isbn = leitor.nextLine();
 
         Clientes cliente = null;
         Livros livro = null;
 
-        for(int i=0;i<totalClientes;i++){
+        for (Clientes c : clientes) {
 
-            if(clientes[i].getCodigoDoCliente() == codigoCliente){
-                cliente = clientes[i];
+            if (c.getCodigoDoCliente() == codigoCliente) {
+                cliente = c;
                 break;
             }
         }
 
-        for(int i = 0; i < totalLivros; i++){
+        for (Livros l : livros) {
 
-            if(livros[i].getIsbn().equals(isbn)){
-                livro = livros[i];
+            if (l.getIsbn().equals(isbn)) {
+                livro = l;
                 break;
             }
         }
 
-        if(cliente == null || livro == null){
+        if (cliente == null || livro == null) {
+
             System.out.println("Cliente ou livro nao encontrado");
             return;
         }
 
-        if(livro.getQuantidadeEmEstoque() <= 0){
+        if (livro.getQuantidadeEmEstoque() <= 0) {
+
             System.out.println("Livro sem estoque");
             return;
         }
 
-        livro.setQuantidadeEmEstoque(livro.getQuantidadeEmEstoque()-1);
-        livro.setQuantidadeEmprestado(livro.getQuantidadeEmprestado()+1);
+        livro.setQuantidadeEmEstoque(livro.getQuantidadeEmEstoque() - 1);
+        livro.setQuantidadeEmprestado(livro.getQuantidadeEmprestado() + 1);
 
         cliente.setEmrestimoAtivo(true);
 
         Emprestimo novo = new Emprestimo();
 
-        novo.setIdDoEmprestimo(totalEmprestimos);
+        novo.setIdDoEmprestimo(emprestimos.size());
         novo.setIdDoCliente(cliente.getIdDoCliente());
         novo.setIdDoLivro(livro.getIdDoLivro());
-        novo.setIdDoBibliotecario(bibliotecarios[logado].getIdDoBibliotecario());
+        novo.setIdDoBibliotecario(bibliotecarios.get(logado).getIdDoBibliotecario());
         novo.setLivroEmPosse(livro.getNomeDoLivro());
         novo.setDataEmprestimo(LocalDate.now().toString());
 
-        emprestimos[totalEmprestimos] = novo;
-
-        totalEmprestimos++;
+        emprestimos.add(novo);
 
         System.out.println("Emprestimo realizado com sucesso");
     }
-    public static void ListarClientes() {
-        Scanner listarScanner = new Scanner(System.in);
-        int point = 10;
-        boolean loopLista = true;
-        int i, j = 0;
-        while(loopLista == true){
-            for (i = j; i <= point; i++) {
-                if (clientes[i] == null){
-                    System.out.println("sem Usuarios");
-                }else{
-                clientes[i].exibirCliente();
-                }
+
+    public static void listarClientes() {
+
+        if (clientes.size() == 0) {
+
+            System.out.println("Nenhum cliente cadastrado");
+            return;
+        }
+
+        int pagina = 0;
+        int porPagina = 10;
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+
+            int inicio = pagina * porPagina;
+            int fim = Math.min(inicio + porPagina, clientes.size());
+
+            for (int i = inicio; i < fim; i++) {
+
+                clientes.get(i).exibirCliente();
             }
-            System.out.println("\n\n Digite 1 para voltar a pagina e 2 para avançar ");
-            System.out.println("Digite 0 para retornar ao menu");
-            int escolha = listarScanner.nextInt();
-            switch (escolha) {
-                case 0:
-                    loopLista = false;
-                    break;
-                case 1:
-                    j = j + 10;
-                    point = point + 10;
-                    break;
-                case 2:
-                    if (j == 0 && point == 10){
-                    }else{
-                        j = j - 10;
-                    point = point - 10;
-                }
+
+            System.out.println("\n1 Proxima pagina");
+            System.out.println("2 Pagina anterior");
+            System.out.println("0 Voltar");
+
+            int opcao = scanner.nextInt();
+
+            if (opcao == 1 && fim < clientes.size()) {
+
+                pagina++;
+            } else if (opcao == 2 && pagina > 0) {
+
+                pagina--;
+            } else if (opcao == 0) {
+
+                return;
             }
+
         }
     }
-    public static void UpLoadNoBancoCliente(){
 
-    }
 }
