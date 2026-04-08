@@ -157,11 +157,28 @@ public class Main {
 
     public static void cadastrarLivro(Scanner leitor) {
 
-        Livros novo = new Livros();
+        System.out.println("Tipo de livro:");
+        System.out.println("1 - Livro Fisico");
+        System.out.println("2 - Ebook");
+        System.out.println("3 - AudioBook");
+
+        int tipo = leitor.nextInt();
+        leitor.nextLine();
+
+        Livros novo;
+
+        if (tipo == 1) {
+            novo = new LivroFisico();
+        } else if (tipo == 2) {
+            novo = new Ebook();
+        } else if (tipo == 3) {
+            novo = new AudioBook();
+        } else {
+            System.out.println("Tipo invalido");
+            return;
+        }
 
         novo.setIdDoLivro(livros.size());
-
-        leitor.nextLine();
 
         System.out.println("ISBN:");
         novo.setIsbn(leitor.nextLine());
@@ -180,9 +197,66 @@ public class Main {
 
         novo.setQuantidadeEmprestado(0);
 
+        leitor.nextLine();
+
+        // CAMPOS ESPECÍFICOS
+        if (novo instanceof LivroFisico) {
+
+            LivroFisico lf = (LivroFisico) novo;
+
+            System.out.println("Editora:");
+            lf.setEditora(leitor.nextLine());
+
+            System.out.println("Numero de paginas:");
+            lf.setNumeroDePaginas(leitor.nextInt());
+            leitor.nextLine();
+
+            System.out.println("Localizacao na biblioteca:");
+            lf.setLocalizacaoNaBiblioteca(leitor.nextLine());
+
+            System.out.println("Estado de conservacao:");
+            lf.setEstadoConservacao(leitor.nextLine());
+        }
+
+        if (novo instanceof Ebook) {
+
+            Ebook eb = (Ebook) novo;
+
+            System.out.println("Tamanho do arquivo MB:");
+            eb.setTamanhoArquivoMB(leitor.nextDouble());
+            leitor.nextLine();
+
+            System.out.println("Formato do arquivo:");
+            eb.setFormatoArquivo(leitor.nextLine());
+
+            System.out.println("Plataforma:");
+            eb.setPlataforma(leitor.nextLine());
+
+            System.out.println("Link download:");
+            eb.setLinkDownload(leitor.nextLine());
+        }
+
+        if (novo instanceof AudioBook) {
+
+            AudioBook ab = (AudioBook) novo;
+
+            System.out.println("Narrador:");
+            ab.setNarrador(leitor.nextLine());
+
+            System.out.println("Duracao minutos:");
+            ab.setDuracaoMinutos(leitor.nextInt());
+            leitor.nextLine();
+
+            System.out.println("Formato audio:");
+            ab.setFormatoAudio(leitor.nextLine());
+
+            System.out.println("Idioma:");
+            ab.setIdioma(leitor.nextLine());
+        }
+
         livros.add(novo);
 
-        System.out.println("Livro cadastrado");
+        System.out.println("Livro cadastrado com sucesso");
     }
 
     public static void cadastrarCliente(Scanner leitor) {
@@ -304,8 +378,11 @@ public class Main {
             int inicio = pagina * porPagina;
             int fim = Math.min(inicio + porPagina, clientes.size());
 
-            for (int i = inicio; i < fim; i++) {
+            System.out.printf("| %-3s | %-6s | %-20s | %-15s | %-16s |\n",
+                    " Id", "Codigo", "Nome do Cliente", "CPF do Cliente", "Emprestimo Ativo");
 
+            System.out.println("--------------------------------------------------------------------------");
+            for (int i = inicio; i < fim; i++) {
                 clientes.get(i).exibirCliente();
             }
 

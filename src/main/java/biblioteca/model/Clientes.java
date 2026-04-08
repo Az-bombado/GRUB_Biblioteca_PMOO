@@ -10,13 +10,15 @@ public class Clientes {
     private boolean cadastroAtivo;
 
     public void exibirCliente() {
-        System.out.println(
-                "| " + idDoCliente +
-                        " | " + codigoDoCliente +
-                        " | " + nomeDoCliente +
-                        " | " + cpfDoCliente +
-                        " | " + emprestimoAtivo + " |"
+
+        System.out.printf("| %-3d | %-6d | %-20s | %-15s | %-16s |\n",
+                idDoCliente,
+                codigoDoCliente,
+                nomeDoCliente,
+                cpfDoCliente,
+                emprestimoAtivo
         );
+
     }
 
     public int getIdDoCliente() {

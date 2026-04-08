@@ -1,6 +1,6 @@
 package biblioteca.model;
 
-public class Livros {
+public abstract class Livros {
 
     private int idDoLivro;
     private String isbn;
@@ -16,6 +16,14 @@ public class Livros {
 
     public void setIdDoLivro(int idDoLivro) {
         this.idDoLivro = idDoLivro;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getNomeDoLivro() {
@@ -58,11 +66,5 @@ public class Livros {
         this.quantidadeEmprestado = quantidadeEmprestado;
     }
 
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+    public abstract void exibirTipoLivro();
 }
